@@ -115,7 +115,7 @@ def main():
     global target
     target = os.path.expanduser(rcf.readline().rstrip('\n')[7:])
 
-    if user=='' or password=='' or target==''
+    if user=='' or password=='' or target=='':
       printHelpMessage('ERROR: The ~/.yoinkrc configuration file appears incomplete!\nYou may need to use option --recreate-yoinkrc to revert your ~/.yoinkrc to the initial-run state for this version of Yoink.\n')
       return 0
 
