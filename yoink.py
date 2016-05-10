@@ -28,7 +28,8 @@ headers = {
 }
 
 def printHelpMessage(header = ''):
-  print 'Yoink! A Freeleech Torrent Grabber'
+    print('Yoink! A Freeleech Torrent Grabber')
+
 
 def torrentAlreadyDownloaded(tid):
   try:
@@ -40,8 +41,8 @@ def torrentAlreadyDownloaded(tid):
     else:
       torrent_found = True
   except Exception,e:
-    print 'Error when executing SELECT on ~/.yoink.db:'
-    print str(e)
+    print('Error when executing SELECT on ~/.yoink.db:')
+    print(str(e))
     sys.exit()
   finally:
     if indexdb:
@@ -56,8 +57,8 @@ def addTorrentToDB(tid):
       indexdbc.execute("INSERT INTO snatchedtorrents values (?)", [tid])
       indexdb.commit()
     except Exception,e:
-      print 'Error when executing INSERT on ~/.yoink.db:'
-      print str(e)
+      print('Error when executing INSERT on ~/.yoink.db:')
+      print(str(e))
       sys.exit()
     finally:
       if indexdb:
@@ -71,23 +72,24 @@ def checkForArg(arg):
 
 def download_torrent(session, tid, name, authkey, passkey):
   if not os.path.exists(target):
-    print 'Target Directory does not exist, creating...'
+    print('Target Directory does not exist, creating...')
     os.mkdir(target)
 
   if torrentAlreadyDownloaded(tid):
-    print 'I have previously downloaded {}.'.format(tid)
+    print('I have previously downloaded {}.'.format(tid))
     return
 
   authdata = '&authkey={}&torrent_pass={}'.format(authkey,passkey)
 
-  print '{}:'.format(tid),
+  print('{}:'.format(tid))
   path = u''.join(os.path.join(target, name)).encode('utf-8').strip()
   dl = session.get('https://tls.passthepopcorn.me/torrents.php?action=download&id={}{}'.format(tid, authdata), headers=headers)
   with open(path, 'wb') as f:
     for chunk in dl.iter_content(1024*1024):
       f.write(chunk)
   addTorrentToDB(tid)
-  print 'Yoink!'
+  print('Yoink!')
+
 
 def main():
   rcpath=os.path.expanduser('~/.yoinkrc')
@@ -149,7 +151,7 @@ def main():
     except requests.exceptions.TooManyRedirects:
       s.cookies.clear()
     except requests.exceptions.RequestException as e:
-      print e
+      print(e)
       sys.exit(1)
 
   if r.url != u'https://tls.passthepopcorn.me/index.php':
@@ -176,7 +178,7 @@ def main():
     authkey = data['AuthKey']
     passkey = data['TorrentPass']
     for movie in data['Movies']:
-          print HTMLParser.HTMLParser().unescape(movie['Title'])
+          print(HTMLParser.HTMLParser().unescape(movie['Title']))
           for groupingQuality in movie['GroupingQualities']:
               for torrent in groupingQuality['Torrents']:
                     if torrent['Freeleech'] == 'Freeleech!':
@@ -184,8 +186,8 @@ def main():
                         download_torrent(s, torrent['TorrentId'], fn, authkey, passkey)
     page += 1
 
-  print '\n'
-  print "Phew! All done."
+  print('\n')
+  print("Phew! All done.")
 
 if __name__ == '__main__':
   main()
