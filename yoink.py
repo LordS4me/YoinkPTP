@@ -81,6 +81,7 @@ def download_torrent(session, tid, name, authkey, passkey):
   authdata = '&authkey={}&torrent_pass={}'.format(authkey,passkey)
 
   print '{}:'.format(tid),
+  path = u''.join(os.path.join(target, name)).encode('utf-8').strip()
   dl = session.get('https://tls.passthepopcorn.me/torrents.php?action=download&id={}{}'.format(tid, authdata), headers=headers)
   with open(path, 'wb') as f:
     for chunk in dl.iter_content(1024*1024):
